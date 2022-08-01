@@ -6,4 +6,4 @@ exports.fetchTopics = () => {
 
         return rows
     })
-}
+};
