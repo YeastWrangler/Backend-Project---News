@@ -25,10 +25,10 @@ describe.only('GET/api/topics', () => {
         return request(app)
         .get('/api/topics')
         .expect(200)
-        .then(({body}) => {
-            expect(body.topics[0]).toHaveProperty('slug')
-            expect(body.topics[0]).toHaveProperty('description')
-        })
+        .then(({body}) => { body.topics.forEach((topic) => {
+            expect(topic).toHaveProperty('slug')
+            expect(topic).toHaveProperty('description')
+        }) 
     })
     test('404 status code with error message when using invalid path', () => {
         return request(app)
