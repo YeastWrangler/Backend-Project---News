@@ -18,7 +18,6 @@ describe.only('GET/api/topics', () => {
         .get('/api/topics')
         .expect(200)
         .then(({body}) => {
-            //console.log({body}, 'in test')
             expect(body.topics.length).toBe(3)
         })
     })
