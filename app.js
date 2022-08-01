@@ -10,12 +10,4 @@ app.all('*', (req, res) => {
 })
 
 
-/////////////////////////////////
-
-
-// app.use((err, req, res, next) => {
-//     console.log('error caught')
-//     res.status(err.status).send({msg: err.msg})
-// })
-
 module.exports = app
