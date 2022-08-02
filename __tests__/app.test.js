@@ -12,12 +12,13 @@ afterAll(() => {
     return db.end()
 })
 
-describe.only('GET/api/topics', () => {
+describe('GET/api/topics', () => {
     test('200 status code with a response body of an array of all topic objects', () => {
         return request(app)
         .get('/api/topics')
         .expect(200)
         .then(({body}) => {
+            //console.log({body}, 'in test')
             expect(body.topics.length).toBe(3)
         })
     })
@@ -28,7 +29,8 @@ describe.only('GET/api/topics', () => {
         .then(({body}) => { body.topics.forEach((topic) => {
             expect(topic).toHaveProperty('slug')
             expect(topic).toHaveProperty('description')
-        }) 
+        })      
+    })
     })
     test('404 status code with error message when using invalid path', () => {
         return request(app)
@@ -39,3 +41,39 @@ describe.only('GET/api/topics', () => {
         })
     })
 })
+describe('GET/api/articles/:article_id', () => {
+    test('200 status code - returns user requested article as an array with object articles that contain all its properties', () => {
+        const articleId = 2
+        return request(app)
+        .get(`/api/articles/${articleId}`)
+        .expect(200)
+        .then(({body}) => {
+            const {article} = body;
+            expect({article: article}).toEqual(({article: {
+                    author: expect.any(String),
+                    title: expect.any(String),
+                    article_id: 2,
+                    body: expect.any(String),
+                    topic: expect.any(String),
+                    created_at: expect.any(String),
+                    votes: expect.any(Number)
+                }})) 
+            })
+            })
+    })
+    test('404 code and sends an appropriate error message when given a valid but non-existent id', () => {
+        return request(app)
+        .get('/api/articles/999')
+        .expect(404)
+        .then((response) => {
+            expect(response.body.msg).toBe('article ID does not exist')
+        })
+    })
+    test('400 code and sends an appropriate error message when given an invalid id ', () => {
+        return request(app)
+        .get('/api/articles/blahblah')
+        .expect(400)
+        .then((response) => {
+            expect(response.body.msg).toBe('invalid id provided')
+        })
+    })
