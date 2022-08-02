@@ -5,7 +5,7 @@ exports.fetchArticles = (id) => {
     .query(`SELECT * FROM articles WHERE article_id = $1;`, [id])
     .then(({rows: article})=> {
         if(article.length === 0) {
-          return Promise.reject({status: 404, msg: 'article ID does not exist'})
+          return Promise.reject({status: 404, msg: 'article ID not found'})
         } else 
         return article;
         })
@@ -18,7 +18,7 @@ exports.addVotes = (inc_votes, article_id) => {
      .query(`UPDATE articles SET votes = votes + $1 WHERE article_id = $2 RETURNING *;`,[inc_votes, article_id])
      .then(({rows: article}) => {
         if(article.length === 0) {
-          return Promise.reject({status: 404, msg: 'article ID does not exist'})
+          return Promise.reject({status: 404, msg: 'article ID not found'})
        } else
         return article;
     })  
