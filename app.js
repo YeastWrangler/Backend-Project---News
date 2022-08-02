@@ -5,8 +5,8 @@ app.use(express.json());
 
 
 const {getTopics} = require('./controllers/topic.controllers');
-const {getArticlesById} = require('./controllers/articles.controllers');
-const {patchArticlesById} = require('./controllers/articles.controllers');
+const {getArticlesById, patchArticlesById} = require('./controllers/articles.controllers');
+
 
 app.get('/api/topics', getTopics);
 
