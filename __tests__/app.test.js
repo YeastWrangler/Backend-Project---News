@@ -30,15 +30,7 @@ describe('GET/api/topics', () => {
             expect(topic).toHaveProperty('description')
         })      
     })
-    })
-    test('404 status code with error message when using invalid path', () => {
-        return request(app)
-        .get('/api/notopics')
-        .expect(404)
-        .then(({body})=> {
-            expect(body.msg).toEqual('invalid path')
-        })
-    })
+})
 })
 describe('GET/api/articles/:article_id', () => {
     test('200 status code - returns user requested article as an array with object articles that contain all its properties', () => {
@@ -157,6 +149,8 @@ describe('GET/api/users', () => {
             })
         })
     })
+})
+describe('test for all invalid path end points', () => {
     test('404 status code with error message when using invalid path', () => {
         return request(app)
         .get('/api/userNot')
