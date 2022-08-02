@@ -18,7 +18,6 @@ describe('GET/api/topics', () => {
         .get('/api/topics')
         .expect(200)
         .then(({body}) => {
-            //console.log({body}, 'in test')
             expect(body.topics.length).toBe(3)
         })
     })
@@ -49,7 +48,8 @@ describe('GET/api/articles/:article_id', () => {
         .expect(200)
         .then(({body}) => {
             const {article} = body;
-            expect({article: article}).toEqual(({article: {
+            expect({article: article}).toEqual(({article: 
+                {
                     author: expect.any(String),
                     title: expect.any(String),
                     article_id: 2,
@@ -57,23 +57,88 @@ describe('GET/api/articles/:article_id', () => {
                     topic: expect.any(String),
                     created_at: expect.any(String),
                     votes: expect.any(Number)
-                }})) 
+                }
+            })) 
             })
-            })
-    })
+        })
     test('404 code and sends an appropriate error message when given a valid but non-existent id', () => {
         return request(app)
         .get('/api/articles/999')
         .expect(404)
-        .then((response) => {
-            expect(response.body.msg).toBe('article ID does not exist')
+        .then(({body}) => {
+            expect(body.msg).toBe('article ID does not exist')
         })
     })
+
     test('400 code and sends an appropriate error message when given an invalid id ', () => {
         return request(app)
         .get('/api/articles/blahblah')
         .expect(400)
-        .then((response) => {
-            expect(response.body.msg).toBe('invalid id provided')
+        .then(({body}) => {
+            expect(body.msg).toBe('invalid request')
         })
     })
+})
+describe('PATCH/api/articles/article_id', () => {
+    test('increments votes on selected article id and returns updated article object', () => {
+        const voteObject = { inc_votes : 5 }
+        return request(app)
+        .patch('/api/articles/2')
+        .send(voteObject)
+        .expect(201)
+        .then(({body}) => {
+            expect(body.article.votes).toBe(5)
+        })
+    })
+    test('decrements votes on selected article id and returns updated article object', () => {
+        const voteObject = { inc_votes : -5 }
+        return request(app)
+        .patch('/api/articles/1')
+        .send(voteObject)
+        .expect(201)
+        .then(({body}) => {
+            expect(body.article.votes).toBe(95)
+        })
+    })
+    test('404 status when given a valid but non-existent article_id', () => {
+        const voteObject = { inc_votes : 5 }
+        return request(app)
+        .patch('/api/articles/999')
+        .send(voteObject)
+        .expect(404)
+        .then(({body}) => {
+            expect(body.msg).toBe('article ID does not exist')
+        })
+    })
+    test('400 status code and sends an appropriate error message when given an invalid id', () => {
+        const voteObject = { inc_votes : 5 }
+        return request(app)
+        .patch('/api/articles/blahblah')
+        .send(voteObject)
+        .expect(400)
+        .then(({body}) => {
+            expect(body.msg).toBe('invalid request')
+        })
+    })
+    test('400 status code when no inc_votes is attached to request body', () => {
+        const voteObject = {}
+        return request(app)
+        .patch('/api/articles/2')
+        .send(voteObject)
+        .expect(400)
+        .then(({body}) => {
+            expect(body.msg).toBe('invalid patch request')
+        })
+    })
+    test('400 status code when value of inc_votes is not a Number', () => {
+        const voteObject = { inc_votes : 'Wombat' }
+        return request(app)
+        .patch('/api/articles/2')
+        .send(voteObject)
+        .expect(400)
+        .then(({body}) => {
+            expect(body.msg).toBe('invalid request')
+        })
+    })
+
+})
