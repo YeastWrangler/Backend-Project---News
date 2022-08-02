@@ -7,6 +7,7 @@ exports.fetchArticles = (id) => {
         if(rows.length === 0) {
           return Promise.reject({status: 404, msg: 'article ID does not exist'})
         } else 
+        //console.log({rows: [article]})
         return rows;
         })
 }; 

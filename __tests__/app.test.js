@@ -41,7 +41,7 @@ describe('GET/api/topics', () => {
         })
     })
 })
-describe('GET/api/articles/:artcile_id', () => {
+describe('GET/api/articles/:article_id', () => {
     test('200 status code - returns user requested article as an array with object articles that contain all its properties', () => {
         const articleId = 2
         return request(app)
@@ -49,18 +49,15 @@ describe('GET/api/articles/:artcile_id', () => {
         .expect(200)
         .then(({body}) => {
             const {article} = body;
-            expect(body.article).toBeInstanceOf(Array)
-            article.forEach((item) => {
-            expect(item).toEqual(
-                expect.objectContaining({
+            expect({article: article}).toEqual(({article: {
                     author: expect.any(String),
                     title: expect.any(String),
-                    article_id: expect.any(Number),
+                    article_id: 2,
                     body: expect.any(String),
                     topic: expect.any(String),
                     created_at: expect.any(String),
                     votes: expect.any(Number)
-                })) 
+                }})) 
             })
             })
     })
@@ -72,7 +69,7 @@ describe('GET/api/articles/:artcile_id', () => {
             expect(response.body.msg).toBe('article ID does not exist')
         })
     })
-    test.only('400 code and sends an appropriate error message when given an invalid id ', () => {
+    test('400 code and sends an appropriate error message when given an invalid id ', () => {
         return request(app)
         .get('/api/articles/blahblah')
         .expect(400)
@@ -80,4 +77,3 @@ describe('GET/api/articles/:artcile_id', () => {
             expect(response.body.msg).toBe('invalid id provided')
         })
     })
-})
