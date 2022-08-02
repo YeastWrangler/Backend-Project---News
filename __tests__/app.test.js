@@ -66,7 +66,7 @@ describe('GET/api/articles/:article_id', () => {
         .get('/api/articles/999')
         .expect(404)
         .then(({body}) => {
-            expect(body.msg).toBe('article ID does not exist')
+            expect(body.msg).toBe('article ID not found')
         })
     })
 
@@ -107,7 +107,7 @@ describe('PATCH/api/articles/article_id', () => {
         .send(voteObject)
         .expect(404)
         .then(({body}) => {
-            expect(body.msg).toBe('article ID does not exist')
+            expect(body.msg).toBe('article ID not found')
         })
     })
     test('400 status code and sends an appropriate error message when given an invalid id', () => {
@@ -141,4 +141,28 @@ describe('PATCH/api/articles/article_id', () => {
         })
     })
 
+})
+describe('GET/api/users', () => {
+    test('status 200 and returns an array of objects with appropriate properties', () => {
+        return request(app)
+        .get('/api/users')
+        .expect(200)
+        .then(({body}) => {
+            expect(body.users).toBeInstanceOf(Array)
+            expect(body.users).toHaveLength(4)
+            body.users.forEach((user) => {
+                expect(user.username).toEqual(expect.any(String));
+                expect(user.name).toEqual(expect.any(String));
+                expect(user.avatar_url).toEqual(expect.any(String)); 
+            })
+        })
+    })
+    test('404 status code with error message when using invalid path', () => {
+        return request(app)
+        .get('/api/userNot')
+        .expect(404)
+        .then(({body})=> {
+            expect(body.msg).toEqual('invalid path')
+        })
+    })
 })
