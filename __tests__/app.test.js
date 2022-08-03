@@ -3,7 +3,7 @@ const request = require('supertest');
 const testData = require('../db/data/test-data/index');
 const db = require('../db/connection');
 const seed = require('../db/seeds/seed');
-const { get } = require('../app');
+
 
 beforeEach(() => {
     return seed(testData)
@@ -205,8 +205,7 @@ describe('GET/api/articles', () => {
         .get('/api/articles')
         .expect(200)
         .then(({body}) => {
-            expect(body.articles[0].article_id).toEqual(3)
-            expect(body.articles[11].article_id).toEqual(7)
+            expect(body.articles).toBeSortedBy('created_at', {descending: true})
         })
     })
 })
