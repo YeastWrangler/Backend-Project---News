@@ -3,6 +3,7 @@ const request = require('supertest');
 const testData = require('../db/data/test-data/index');
 const db = require('../db/connection');
 const seed = require('../db/seeds/seed');
+const { get } = require('../app');
 
 beforeEach(() => {
     return seed(testData)
@@ -177,4 +178,35 @@ describe('test for all invalid path end points', () => {
         })
     })
 })
-
+describe('GET/api/articles', () => {
+    test('200 status and returns an array with articles as objects containing appropriate properties', () => {
+        return request(app)
+        .get('/api/articles')
+        .expect(200)
+        .then(({body}) => {
+            expect(body.articles).toBeInstanceOf(Array)
+            expect(body.articles).toHaveLength(12)
+            body.articles.forEach((article) => {
+                expect(article).toEqual(expect.objectContaining({ 
+                    article_id: expect.any(Number),
+                    title: expect.any(String),
+                    author: expect.any(String),
+                    topic: expect.any(String),
+                    body: expect.any(String),
+                    created_at: expect.any(String),
+                    votes: expect.any(Number),
+                    comment_count: expect.any(String)
+                }))
+            })
+        })
+    })
+    test('200 status code, returns articles ordered by descending date - most recent first', () => {
+        return request(app)
+        .get('/api/articles')
+        .expect(200)
+        .then(({body}) => {
+            expect(body.articles[0].article_id).toEqual(3)
+            expect(body.articles[11].article_id).toEqual(7)
+        })
+    })
+})

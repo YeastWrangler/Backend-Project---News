@@ -14,6 +14,21 @@ exports.fetchArticleById = (id) => {
         return article;
         })
 }; 
+exports.fetchArticles = () => {
+    return db
+    .query(`SELECT articles.article_id, articles.title, articles.topic, articles.author, articles.body, articles.created_at, articles.votes, COUNT(comments.comment_id) AS comment_count
+    FROM articles 
+    LEFT JOIN comments ON comments.article_id = articles.article_id
+    GROUP BY articles.article_id
+    ORDER BY created_at DESC;`)
+    .then(({rows: articles})=> {
+      if(articles.length === 0) {
+        return Promise.reject({status: 404, msg: 'articles not found'})
+      } else 
+      return articles;
+      })
+}
+
 exports.addVotes = (inc_votes, article_id) => {
     if (!inc_votes) {
      return Promise.reject({status: 400, msg: 'invalid patch request'})
