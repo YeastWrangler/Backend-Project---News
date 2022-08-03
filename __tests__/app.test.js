@@ -34,13 +34,11 @@ describe('GET/api/topics', () => {
 })
 describe('GET/api/articles/:article_id', () => {
     test('200 status code - returns user requested article as an array with object articles that contain all its properties', () => {
-        const articleId = 2
         return request(app)
-        .get(`/api/articles/${articleId}`)
+        .get(`/api/articles/2`)
         .expect(200)
         .then(({body}) => {
-            const {article} = body;
-            expect({article: article}).toEqual(({article: 
+            expect(body.article).toMatchObject( 
                 {
                     author: expect.any(String),
                     title: expect.any(String),
@@ -50,7 +48,7 @@ describe('GET/api/articles/:article_id', () => {
                     created_at: expect.any(String),
                     votes: expect.any(Number)
                 }
-            })) 
+                ) 
             })
         })
     test('404 code and sends an appropriate error message when given a valid but non-existent id', () => {
@@ -68,6 +66,25 @@ describe('GET/api/articles/:article_id', () => {
         .expect(400)
         .then(({body}) => {
             expect(body.msg).toBe('invalid request')
+        })
+    })
+    test('200 status code and includes property of comment-count which displays number of comments for specified article', () => {
+        return request(app)
+        .get('/api/articles/3')
+        .expect(200)
+        .then(({body}) => {
+            expect(body).toMatchObject({article:
+            {
+                article_id: 3,
+                title: expect.any(String),
+                author: expect.any(String),
+                topic: expect.any(String),
+                body: expect.any(String),
+                created_at: expect.any(String),
+                votes: expect.any(Number),
+                comment_count: '2'
+            }
+            })
         })
     })
 })
@@ -160,3 +177,4 @@ describe('test for all invalid path end points', () => {
         })
     })
 })
+
