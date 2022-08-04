@@ -230,7 +230,7 @@ describe('GET/api/articles/:article_id/comments', () => {
             })
         })
     })
-    test('404 code and sends an appropriate error message when given a valid but non-existent article id', () => {
+    test('404 code and sends an appropriate error message when given a valid but non-existent article_id', () => {
                 return request(app)
                 .get('/api/articles/999/comments')
                 .expect(404)
@@ -238,7 +238,7 @@ describe('GET/api/articles/:article_id/comments', () => {
                     expect(body.msg).toBe('article ID not found')
                 })         
     })
-    test('200 status for a valid article id that does not have any associated comments', () => {
+    test('200 status for a valid article_id that does not have any associated comments', () => {
         return request(app)
         .get('/api/articles/2/comments')
         .expect(200)
@@ -246,7 +246,7 @@ describe('GET/api/articles/:article_id/comments', () => {
             expect(body).toEqual({comments: []})
         })
     })
-    test.only('200 status and returns all/multiple comments from specified article', () => {
+    test('200 status and returns all/multiple comments from specified article', () => {
         return request(app)
         .get('/api/articles/3/comments')
         .expect(200)
@@ -271,4 +271,54 @@ describe('GET/api/articles/:article_id/comments', () => {
               ]})
         })
     })
+})
+describe('POST/api/articles/:article_id/comments', () => {
+    test('201 status code, posts comment and returns an object of posted comment to user with all info', () => {
+        const commentToPost = { username : 'lurker', body: 'This article is the worst' }
+        return request(app)
+        .post('/api/articles/2/comments')
+        .send(commentToPost)
+        .expect(201)
+        .then(({body}) => {
+            expect(body).toMatchObject({comment: { 
+                article_id: 2, 
+                author: 'lurker', 
+                body: 'This article is the worst',
+                comment_id: expect.any(Number),
+                created_at: expect.any(String),
+                votes: expect.any(Number)
+             } })
+        })
+    })
+test('400 status code if article_id is invalid-not a number', () => {
+	const commentToPost = { username : 'lurker', body: 'This article is the worst' }
+        return request(app)
+        .post('/api/articles/blah/comments')
+        .send(commentToPost)
+        .expect(400)
+        .then(({body}) => {
+            expect(body.msg).toBe('invalid request')
+        })
+   })
+test('404 status code if article_id is valid but does not exist in database', () => {
+	const commentToPost = { username : 'lurker', body: 'This article is the worst' }
+        return request(app)
+        .post('/api/articles/999/comments')
+        .send(commentToPost)
+        .expect(404)
+        .then(({body}) => {
+            expect(body.msg).toBe('article ID not found')
+        })
+})
+ test('400 status code if post does not include a body, username, or both', () => {
+	const commentToPost = { body: 'This article is the worst'}
+        return request(app)
+        .post('/api/articles/2/comments')
+        .send(commentToPost)
+        .expect(400)
+        .then(({body}) => {
+            expect(body.msg).toBe('bad post information')
+        })
+})
+ 
 })
