@@ -210,7 +210,7 @@ describe('GET/api/articles', () => {
     })
 })
 describe('GET/api/articles/:article_id/comments', () => {
-    test('200 status with an array of comment objects that contain appropraite properties', () => {
+    test('200 status with an array of comment objects that contain appropriate properties', () => {
         return request(app)
         .get(`/api/articles/3/comments`)
         .expect(200)
@@ -239,12 +239,13 @@ describe('GET/api/articles/:article_id/comments', () => {
                 })
             
     })
-    test('404 code and sends an appropriate error message when given a valid article id that does not have any associated comments', () => {
+    test('200 status for a valid article id that does not have any associated comments', () => {
         return request(app)
         .get('/api/articles/2/comments')
-        .expect(404)
+        .expect(200)
         .then(({body}) => {
-            expect(body.msg).toBe('comment not found')
+            console.log(body, 'in test')
+            expect(body).toEqual({})
         })
     
 })

@@ -11,7 +11,10 @@ exports.getCommentsByArticleId = (req, res, next) => {
     ])
     .then((comments) => {
         newComments = comments[1]
-        //not sure if this is a correct way to only send comments?
+        console.log(newComments)
+        if(newComments.length === 0){
+            res.status(200).send({})
+        } else
         res.status(200).send({newComments})
     }).catch(next);
 };
