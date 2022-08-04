@@ -230,7 +230,7 @@ describe('GET/api/articles/:article_id/comments', () => {
             })
         })
     })
-    test('404 code and sends an appropriate error message when given a valid but non-existent article id', () => {
+    test('404 code and sends an appropriate error message when given a valid but non-existent article_id', () => {
                 return request(app)
                 .get('/api/articles/999/comments')
                 .expect(404)
@@ -238,7 +238,7 @@ describe('GET/api/articles/:article_id/comments', () => {
                     expect(body.msg).toBe('article ID not found')
                 })         
     })
-    test('200 status for a valid article id that does not have any associated comments', () => {
+    test('200 status for a valid article_id that does not have any associated comments', () => {
         return request(app)
         .get('/api/articles/2/comments')
         .expect(200)
@@ -290,7 +290,7 @@ describe('POST/api/articles/:article_id/comments', () => {
              } })
         })
     })
-test('400 status code if article id is invalid-not a number', () => {
+test('400 status code if article_id is invalid-not a number', () => {
 	const commentToPost = { username : 'lurker', body: 'This article is the worst' }
         return request(app)
         .post('/api/articles/blah/comments')
