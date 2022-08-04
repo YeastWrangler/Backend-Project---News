@@ -215,9 +215,9 @@ describe('GET/api/articles/:article_id/comments', () => {
         .get(`/api/articles/3/comments`)
         .expect(200)
         .then(({body}) => {
-            expect(body.newComments).toBeInstanceOf(Array)
-            expect(body.newComments).toHaveLength(2)
-            body.newComments.forEach((comment) => {
+            expect(body.comments).toBeInstanceOf(Array)
+            expect(body.comments).toHaveLength(2)
+            body.comments.forEach((comment) => {
             expect(comment).toMatchObject( 
                 {
                     comment_id: expect.any(Number),
@@ -236,17 +236,39 @@ describe('GET/api/articles/:article_id/comments', () => {
                 .expect(404)
                 .then(({body}) => {
                     expect(body.msg).toBe('article ID not found')
-                })
-            
+                })         
     })
     test('200 status for a valid article id that does not have any associated comments', () => {
         return request(app)
         .get('/api/articles/2/comments')
         .expect(200)
         .then(({body}) => {
-            console.log(body, 'in test')
-            expect(body).toEqual({})
+            expect(body).toEqual({comments: []})
         })
-    
-})
+    })
+    test.only('200 status and returns all/multiple comments from specified article', () => {
+        return request(app)
+        .get('/api/articles/3/comments')
+        .expect(200)
+        .then(({body}) => {
+            expect(body).toEqual({comments: [
+                {
+                  comment_id: 10,
+                  body: 'git push origin master',
+                  article_id: 3,
+                  author: 'icellusedkars',
+                  votes: 0,
+                  created_at: '2020-06-20T07:24:00.000Z'
+                },
+                {
+                  comment_id: 11,
+                  body: 'Ambidextrous marsupial',
+                  article_id: 3,
+                  author: 'icellusedkars',
+                  votes: 0,
+                  created_at: '2020-09-19T23:10:00.000Z'
+                }
+              ]})
+        })
+    })
 })
