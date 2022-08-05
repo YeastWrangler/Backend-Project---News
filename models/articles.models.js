@@ -14,20 +14,49 @@ exports.fetchArticleById = (id) => {
         return article;
         })
 }; 
-exports.fetchArticles = () => {
+exports.fetchArticles = (userQuery = 'created_at', userOrder = 'DESC', userTopic, topics) => {
+  
+const lowerCaseQuery = userQuery.toLowerCase()
+const upperCaseOrder = userOrder.toUpperCase()
+const validQuery = ['article_id', 'title', 'topic', 'author', 'body', 'created_at', 'votes'];
+const validOrder = ['ASC', 'DESC']
+const validTopics = topics.map((topic) => {
+      return topic.slug
+})
+
+if(!validTopics.includes(userTopic) && userTopic) {
+  return Promise.reject({status: 404, msg: 'article not found'})
+}
+
+if(validTopics.includes(userTopic)) {
+  let optionalTopic = `WHERE articles.topic = $1`
+
+if(validQuery.includes(lowerCaseQuery) && validOrder.includes(upperCaseOrder)) {
+
+   return db
+   .query(`SELECT articles.article_id, articles.title, articles.topic, articles.author, articles.body, articles.created_at, articles.votes, COUNT(comments.comment_id) AS comment_count
+   FROM articles 
+   LEFT JOIN comments ON comments.article_id = articles.article_id
+   ${optionalTopic}
+   GROUP BY articles.article_id
+   ORDER BY ${lowerCaseQuery } ${upperCaseOrder};`, [userTopic])
+   .then(({rows: articles})=> {
+     return articles;
+     })
+    } }
+ 
+else (validQuery.includes(lowerCaseQuery) && validOrder.includes(upperCaseOrder)) 
+ 
     return db
     .query(`SELECT articles.article_id, articles.title, articles.topic, articles.author, articles.body, articles.created_at, articles.votes, COUNT(comments.comment_id) AS comment_count
     FROM articles 
     LEFT JOIN comments ON comments.article_id = articles.article_id
     GROUP BY articles.article_id
-    ORDER BY created_at DESC;`)
+    ORDER BY ${lowerCaseQuery } ${upperCaseOrder};`)
     .then(({rows: articles})=> {
-      if(articles.length === 0) {
-        return Promise.reject({status: 404, msg: 'articles not found'})
-      } else 
       return articles;
       })
-}
+    }
 
 exports.addVotes = (inc_votes, article_id) => {
     if (!inc_votes) {
@@ -40,5 +69,6 @@ exports.addVotes = (inc_votes, article_id) => {
           return Promise.reject({status: 404, msg: 'article ID not found'})
        } else
         return article;
-    })  
-}
+    }) 
+  }
+

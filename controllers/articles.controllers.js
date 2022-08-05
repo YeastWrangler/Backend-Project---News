@@ -1,5 +1,5 @@
 const {fetchArticleById, addVotes, fetchArticles} = require('../models/articles.models')
-
+const {fetchTopics} = require('../models/topic.models')
 
 exports.getArticlesById = (req, res, next) => {
     const { article_id } = req.params
@@ -9,7 +9,12 @@ exports.getArticlesById = (req, res, next) => {
 };
 
 exports.getArticles = (req, res, next) => {
-    fetchArticles().then((articles) => {
+    const { sort_by: userQuery, order: userOrder, topic: userTopic } = req.query;
+        fetchTopics()
+        .then((topics) => {
+            return fetchArticles(userQuery, userOrder, userTopic, topics)
+        })
+    .then((articles) => {
         res.status(200).send({articles})
     }).catch(next);
 };

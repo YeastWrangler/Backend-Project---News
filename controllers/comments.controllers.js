@@ -1,5 +1,5 @@
 const { fetchArticleById } = require('../models/articles.models');
-const { fetchCommentsByArticleId, addCommentById } = require('../models/comments.models')
+const { fetchCommentsByArticleId, addCommentById,} = require('../models/comments.models')
 
 
 exports.getCommentsByArticleId = (req, res, next) => {
@@ -18,7 +18,6 @@ exports.getCommentsByArticleId = (req, res, next) => {
 exports.postCommentByArticleId = (req, res, next) => {
     const { article_id } = req.params;
     const { body } = req;
-
     Promise.all([
         fetchArticleById(article_id),
         addCommentById(article_id, body)

@@ -42,7 +42,9 @@ app.use((err, req, res, next) => {
     } else next(err)
 });
 
+
 app.use((err, req, res, next) => {
+    console.log(err)
     res.status(err.status).send({msg: err.msg})
 })
 
