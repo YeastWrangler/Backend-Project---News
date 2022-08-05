@@ -21,3 +21,15 @@ exports.addCommentById = (id, newComment) => {
     return comment;
   })
 }
+exports.removeCommentById = (commentId) => {
+  return db
+  .query(`DELETE FROM comments
+  WHERE comment_id = ${commentId}
+  RETURNING *;`)
+  .then(({rows})=> {
+    if(rows.length === 0) {
+      return Promise.reject({status: 404, msg: 'comment not found'})
+    } else
+    return rows
+  })
+}

@@ -253,7 +253,7 @@ describe('GET/api/articles', () => {
         .get('/api/articles?sort_by=pugs')
         .expect(400)
         .then(({body}) => {
-            expect(body.msg).toBe('article not found')
+            expect(body.msg).toBe('Bad Request')
         })
     })
     test('400 status code, if user supplies order that is not valid', () => {
@@ -261,7 +261,7 @@ describe('GET/api/articles', () => {
         .get('/api/articles?order=pugs')
         .expect(400)
         .then(({body}) => {
-            expect(body.msg).toBe('article not found')
+            expect(body.msg).toBe('Bad Request')
         })
     })
 })
@@ -378,3 +378,31 @@ test('404 status code if article_id is valid but does not exist in database', ()
 })
  
 })
+describe('DELETE/api/comments/:comment_id', () => {
+    test('204 status code and returns an empty Object', () => {
+    return request(app)
+    .delete('/api/comments/3')
+    .expect(204)
+    .then(({body}) => {
+        expect(body).toEqual({})
+        })
+    })
+    test('404 status code if comment id does not exist', () => {
+        return request(app)
+        .delete('/api/comments/999')
+        .expect(404)
+        .then(({body}) => {
+            expect(body.msg).toBe('comment not found')
+            })
+        })
+    test('400 status code if comment id is not valid - not a number', () => {
+        return request(app)
+        .delete('/api/comments/blah')
+        .expect(400)
+        .then(({body}) => {
+            expect(body.msg).toBe('Bad Request')
+            })	
+        }) 
+    
+    })	
+    

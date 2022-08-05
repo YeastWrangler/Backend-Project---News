@@ -7,7 +7,7 @@ app.use(express.json());
 const {getTopics} = require('./controllers/topic.controllers');
 const {getArticlesById, patchArticlesById, getArticles} = require('./controllers/articles.controllers');
 const {getUsers} = require('./controllers/users.controllers')
-const {postCommentByArticleId, getCommentsByArticleId} = require('./controllers/comments.controllers')
+const {postCommentByArticleId, getCommentsByArticleId, deleteCommentById} = require('./controllers/comments.controllers')
 
 
 app.get('/api/topics', getTopics);
@@ -16,13 +16,15 @@ app.get('/api/articles/:article_id', getArticlesById);
 
 app.get('/api/users', getUsers);
 
-app.get('/api/articles', getArticles)
+app.get('/api/articles', getArticles);
 
 app.get('/api/articles/:article_id/comments', getCommentsByArticleId)
 
 app.post('/api/articles/:article_id/comments', postCommentByArticleId)
 
 app.patch('/api/articles/:article_id', patchArticlesById);
+
+app.delete('/api/comments/:comment_id', deleteCommentById)
 
 app.all('*', (req, res) => {
     res.status(404).send({msg: 'invalid path'})
@@ -44,7 +46,7 @@ app.use((err, req, res, next) => {
 
 app.use((err, req, res, next) => {
     if(err.code === '42703' || err.code === '42601'){
-        res.status(400).send({msg: 'article not found'})
+        res.status(400).send({msg: 'Bad Request'})
     }
     else next(err)
 })
