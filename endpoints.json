@@ -6,22 +6,110 @@
     "description": "serves an array of all topics",
     "queries": [],
     "exampleResponse": {
-      "topics": [{ "slug": "football", "description": "Footie!" }]
+      "topics": [{ "slug": "pugs", "description": "Footie!" }]
     }
   },
   "GET /api/articles": {
-    "description": "serves an array of all topics",
-    "queries": ["author", "topic", "sort_by", "order"],
+    "description": "serves an array of all articles and can be ordered or filtered by user supplied query",
+    "queries": ["article_id", "title", "body", "created_at", "votes", "author", "topic", "sort_by", "order"],
     "exampleResponse": {
       "articles": [
-        {
+        { 
+          "article_id": "3",
           "title": "Seafood substitutions are increasing",
           "topic": "cooking",
           "author": "weegembump",
           "body": "Text from the article..",
-          "created_at": 1527695953341
+          "created_at": 1527695953341,
+          "votes": 2,
+          "comment_count": 0
         }
       ]
     }
+  },
+  "GET /api/articles/:article_id": {
+    "description": "serves a single article that corresponds with user supplied article_id",
+    "queries": ["4"],
+    "exampleResponse": {
+      "article": 
+        { 
+          "article_id": "4",
+          "title": "Seafood substitutions are increasing",
+          "topic": "cooking",
+          "author": "weegembump",
+          "body": "Text from the article..",
+          "created_at": 1527695953341,
+          "votes": 2,
+          "comment_count": 0
+        }
+    }
+  },
+  "GET /api/users": {
+    "description": "serves an array of all users",
+    "queries": [],
+    "exampleResponse":{
+      "users": [
+        {
+         "username": "butter_bridge",
+          "name": "jonny",
+         "avatar_url":
+      "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg"
+      }
+    ]
   }
+},
+"GET /api/articles/:article_id/comments": {
+  "description": "serves an array of comments that corresponds with user supplied article_id",
+  "queries": ["4"],
+  "exampleResponse": {
+    "comments": [ 
+      { 
+        "comment_id": "89",
+        "author": "weegembump",
+        "body": "Text from the comment..",
+        "created_at": 1527695953341,
+        "votes": 2
+      }
+    ]
+  }
+},
+"POST /api/articles/:article_id/comments": {
+  "description": "posts a user supplied comment that corresponds with user supplied article_id",
+  "queries": ["4"],
+  "requestBody":{"username": "Bob", "body": "Text from user body..."},
+  "exampleResponse": {
+    "comment": 
+      { 
+        "comment_id": "89",
+        "author": "weegembump",
+        "body": "Text from the comment..",
+        "created_at": 1527695953341,
+        "votes": 2
+      }
+  }
+},
+"PATCH /api/articles/:article_id": {
+  "description": "Increases or decreases total vote count that corresponds with user supplied article_id",
+  "queries": ["9"],
+  "requestBody":{ "inc_votes": "12" },
+  "exampleResponse": {
+    "article": 
+      { 
+        "article_id": "9",
+        "title": "Seafood substitutions are increasing",
+        "topic": "cooking",
+        "author": "weegembump",
+        "body": "Text from the article..",
+        "created_at": 1527695953341,
+        "votes": 14,
+        "comment_count": 5
+      }
+  }
+},
+"DELETE /api/comments/comment_id": {
+  "description": "deletes the comment specified by user supplied comment_id",
+  "queries": ["2"],
+  "exampleResponse": {}
+}
+
 }
