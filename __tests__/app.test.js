@@ -248,6 +248,22 @@ describe('GET/api/articles', () => {
             expect(body.msg).toBe('article not found')
         })
     })
+    test('400 status code, if user supplies sort_by that is not valid option', () => {
+        return request(app)
+        .get('/api/articles?sort_by=pugs')
+        .expect(400)
+        .then(({body}) => {
+            expect(body.msg).toBe('article not found')
+        })
+    })
+    test('400 status code, if user supplies order that is not valid', () => {
+        return request(app)
+        .get('/api/articles?order=pugs')
+        .expect(400)
+        .then(({body}) => {
+            expect(body.msg).toBe('article not found')
+        })
+    })
 })
 describe('GET/api/articles/:article_id/comments', () => {
     test('200 status with an array of comment objects that contain appropriate properties', () => {
