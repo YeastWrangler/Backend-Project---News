@@ -200,12 +200,68 @@ describe('GET/api/articles', () => {
             })
         })
     })
-    test('200 status code, returns articles ordered by descending date - most recent first', () => {
+    test('200 status code, returns articles ordered by descending date - most recent first as default', () => {
         return request(app)
         .get('/api/articles')
         .expect(200)
         .then(({body}) => {
             expect(body.articles).toBeSortedBy('created_at', {descending: true})
+        })
+    })
+    test('200 status code, returns articles sorted by user defined sort query as long as its a valid column -default descending, compensates if uppercase letters are used', () => {
+        return request(app)
+        .get('/api/articles?sort_by=TitLE')
+        .expect(200)
+        .then(({body}) => {
+            expect(body.articles).toBeSortedBy('title', {descending: true})
+        })
+    })
+    test('200 status code, returns articles ordered by user defined sort query and order and allows lower or uppercase', () => {
+        return request(app)
+        .get('/api/articles?sort_by=title&order=asc')
+        .expect(200)
+        .then(({body}) => {
+            expect(body.articles).toBeSortedBy('title', {descending: false})
+        })
+    })
+    test('200 status code, returns articles filtered by user defined topic', () => {
+        return request(app)
+        .get('/api/articles?sort_by=created_at&order=asc&topic=mitch')
+        .expect(200)
+        .then(({body}) => {
+            expect(body.articles).toBeSortedBy('topic', {descending: false})
+        })
+    })
+    test('200 status code, returns an empty array if no articles match user supplied topic if topic is valid in db', () => {
+        return request(app)
+        .get('/api/articles?sort_by=created_at&order=asc&topic=paper')
+        .expect(200)
+        .then(({body}) => {
+            expect(body).toEqual({articles: []})
+        })
+    })
+    test('404 status code, if user supplied topic does not exist', () => {
+        return request(app)
+        .get('/api/articles?sort_by=created_at&order=asc&topic=pugs')
+        .expect(404)
+        .then(({body}) => {
+            expect(body.msg).toBe('article not found')
+        })
+    })
+    test('400 status code, if user supplies sort_by that is not valid option', () => {
+        return request(app)
+        .get('/api/articles?sort_by=pugs')
+        .expect(400)
+        .then(({body}) => {
+            expect(body.msg).toBe('article not found')
+        })
+    })
+    test('400 status code, if user supplies order that is not valid', () => {
+        return request(app)
+        .get('/api/articles?order=pugs')
+        .expect(400)
+        .then(({body}) => {
+            expect(body.msg).toBe('article not found')
         })
     })
 })

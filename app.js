@@ -43,6 +43,14 @@ app.use((err, req, res, next) => {
 });
 
 app.use((err, req, res, next) => {
+    if(err.code === '42703' || err.code === '42601'){
+        res.status(400).send({msg: 'article not found'})
+    }
+    else next(err)
+})
+
+
+app.use((err, req, res, next) => {
     res.status(err.status).send({msg: err.msg})
 })
 
