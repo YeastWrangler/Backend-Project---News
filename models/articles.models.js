@@ -18,7 +18,7 @@ exports.fetchArticles = (userQuery = 'created_at', userOrder = 'DESC', userTopic
   
 const lowerCaseQuery = userQuery.toLowerCase()
 const upperCaseOrder = userOrder.toUpperCase()
-const validQuery = ['article_id', 'title', 'topic', 'author', 'body', 'created_at', 'votes'];
+const validQuery = ['article_id', 'title', 'topic', 'author', 'body', 'created_at', 'votes', "comment_count"];
 const validOrder = ['ASC', 'DESC']
 const validTopics = topics.map((topic) => {
       return topic.slug
